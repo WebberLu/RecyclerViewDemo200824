@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewAdapter.OnItemClickHandler
     lateinit var mAdapter: ArrayAdapter<String>
     var mData: ArrayList<String> = ArrayList()
     var mRecyclerViewData: ArrayList<DataModel> = ArrayList()
-    var viewAdapter: RecyclerViewAdapter = RecyclerViewAdapter(mRecyclerViewData, this)
+    var mViewAdapter: RecyclerViewAdapter = RecyclerViewAdapter(mRecyclerViewData, this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,19 +47,15 @@ class MainActivity : AppCompatActivity(), RecyclerViewAdapter.OnItemClickHandler
             //type 3
 //            layoutManager = GridLayoutManager(context,2)
 
-            adapter = viewAdapter
+            adapter = mViewAdapter
 
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
 
         btnAdd.setOnClickListener { _ ->
-            viewAdapter.addItem(DataModel("new item", R.drawable.ic_launcher_background))
-            Snackbar
-                .make(mainLayout, "確認新增", Snackbar.LENGTH_SHORT)
-                .setAction("OK") {
-                    Toast.makeText(this, "Snackbar click OK!!", Toast.LENGTH_SHORT).show()
-                }
-                .show()
+            mViewAdapter.addItem(0, DataModel("new item", R.drawable.ic_launcher_background))
+            recycler_view.scrollToPosition(0)
+
         }
     }
 
@@ -68,7 +64,13 @@ class MainActivity : AppCompatActivity(), RecyclerViewAdapter.OnItemClickHandler
     }
 
     override fun onItemRemove(position: Int, data: DataModel) {
-        viewAdapter.removeItem(position)
-        Toast.makeText(this, "remove : " + data.txtItem, Toast.LENGTH_SHORT).show()
+        mViewAdapter.removeItem(position)
+        Snackbar
+            .make(mainLayout, "移除一個項目 : " +data.txtItem, Snackbar.LENGTH_LONG)
+            .setAction("復原") {
+                mViewAdapter.addItem(position, data)
+                recycler_view.scrollToPosition(position)
+            }
+            .show()
     }
 }

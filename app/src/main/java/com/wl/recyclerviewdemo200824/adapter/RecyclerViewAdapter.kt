@@ -68,9 +68,9 @@ class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolde
 
     }
 
-    fun addItem(data: DataModel){
-        mData.add(1,data)
-        notifyItemInserted(1)
+    fun addItem(position: Int, data: DataModel){
+        mData.add(position,data)
+        notifyItemInserted(position)
     }
 
     fun removeItem(position: Int){
