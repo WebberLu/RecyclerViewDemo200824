@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var mAdapter: ArrayAdapter<String>
     var mData: ArrayList<String> = ArrayList()
     var mRecyclerViewData: ArrayList<DataModel> = ArrayList()
+    var viewAdapter: RecyclerViewAdapter = RecyclerViewAdapter(this, mRecyclerViewData)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,9 +40,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         recycler_view.apply {
+
             layoutManager = LinearLayoutManager(context)
-            adapter = RecyclerViewAdapter(context, mRecyclerViewData)
+            adapter = viewAdapter
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
+
+        btnAdd.setOnClickListener { _-> viewAdapter.addItem(DataModel("new item", R.drawable.ic_launcher_background))}
     }
 }

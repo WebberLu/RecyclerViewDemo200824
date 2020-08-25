@@ -4,8 +4,10 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.wl.recyclerviewdemo200824.R
 
@@ -13,7 +15,7 @@ import com.wl.recyclerviewdemo200824.R
 /**
  * Created by KY5680 on 24,08,2020
  */
-class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
     private var mContext: Context
     private var mData: ArrayList<DataModel>
@@ -23,39 +25,58 @@ class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>
         mData = data
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         var cell = LayoutInflater.from(mContext).inflate(R.layout.list_item, parent, false)
-        val viewHolder = ViewHolder(cell)
+        val viewHolder = MyViewHolder(cell)
         viewHolder.icon = cell.findViewById(R.id.icon)
         viewHolder.txtItem = cell.findViewById(R.id.txtItem)
+        viewHolder.btnRemove = cell.findViewById(R.id.btnRemove)
+
+        viewHolder.txtItem.setOnClickListener { _ ->
+            val position = viewHolder.adapterPosition
+            Toast.makeText(mContext, "您選了 : " + mData[position].txtItem, Toast.LENGTH_SHORT).show()
+        }
+
+        viewHolder.btnRemove.setOnClickListener { _ ->
+            val position = viewHolder.adapterPosition
+            removeItem(position)
+        }
+
         return viewHolder
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holderMy: MyViewHolder, position: Int) {
         var data = mData[position]
 
-        holder.txtItem.text = data.txtItem
-        holder.icon.setImageResource(data.iconResourceId)
-
-
+        holderMy.txtItem.text = data.txtItem
+        holderMy.icon.setImageResource(data.iconResourceId)
     }
 
     override fun getItemCount(): Int {
         return mData.size
     }
 
-    class ViewHolder : RecyclerView.ViewHolder {
-        lateinit var icon : ImageView
+    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        lateinit var icon: ImageView
         lateinit var txtItem: TextView
-        constructor(itemView: View) : super(itemView)
+        lateinit var btnRemove: Button
 
     }
 
+    fun addItem(data: DataModel){
+        mData.add(1,data)
+        notifyItemInserted(1)
+    }
+
+    private fun removeItem(position: Int){
+        mData.removeAt(position)
+        notifyItemRemoved(position)
+    }
 }
 
 class DataModel {
-    var txtItem:String
-    var iconResourceId:Int
+    var txtItem: String
+    var iconResourceId: Int
 
     constructor(text: String, iconResourceId: Int) {
         this.txtItem = text
