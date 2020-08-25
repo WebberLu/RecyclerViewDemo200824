@@ -5,13 +5,17 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.wl.recyclerviewdemo200824.adapter.DataModel
 import com.wl.recyclerviewdemo200824.adapter.RecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.navigation_header.*
 
 
 class MainActivity : AppCompatActivity(), RecyclerViewAdapter.OnItemClickHandler {
@@ -60,6 +64,10 @@ class MainActivity : AppCompatActivity(), RecyclerViewAdapter.OnItemClickHandler
             recycler_view.scrollToPosition(0)
 
         }
+
+        setDrawerLayout()
+        setSupportActionBar(toolbar)
+        setActionBarDrawerToggle()
     }
 
     override fun onItemClick(position: Int, data: DataModel) {
@@ -100,5 +108,45 @@ class MainActivity : AppCompatActivity(), RecyclerViewAdapter.OnItemClickHandler
             else -> super.onOptionsItemSelected(item)
         }
 
+    }
+
+    private fun setDrawerLayout() {
+
+        navigation_view.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
+            drawerLayout.closeDrawer(GravityCompat.START)
+
+            return@OnNavigationItemSelectedListener when (item.itemId) {
+                R.id.action_home -> {
+                    Toast.makeText(this@MainActivity, "首頁", Toast.LENGTH_SHORT).show()
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.action_help -> {
+                    Toast.makeText(this@MainActivity, "使用說明", Toast.LENGTH_SHORT).show()
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.action_about -> {
+                    setHeaderInfo()
+                    return@OnNavigationItemSelectedListener true
+                }
+                else -> false
+            }
+        })
+    }
+
+    private fun setActionBarDrawerToggle() {
+
+        var toggle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.drawer_open,
+            R.string.drawer_close
+        );
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState()
+    }
+
+    private fun setHeaderInfo() {
+        txtHeader.text = "123"
     }
 }
