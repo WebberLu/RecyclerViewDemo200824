@@ -1,18 +1,17 @@
 package com.wl.recyclerviewdemo200824
 
 import android.os.Bundle
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.wl.recyclerviewdemo200824.adapter.DataModel
 import com.wl.recyclerviewdemo200824.adapter.RecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(),RecyclerViewAdapter.OnItemClickHandler {
+class MainActivity : AppCompatActivity(), RecyclerViewAdapter.OnItemClickHandler {
 
     lateinit var mAdapter: ArrayAdapter<String>
     var mData: ArrayList<String> = ArrayList()
@@ -53,7 +52,15 @@ class MainActivity : AppCompatActivity(),RecyclerViewAdapter.OnItemClickHandler 
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
 
-        btnAdd.setOnClickListener { _-> viewAdapter.addItem(DataModel("new item", R.drawable.ic_launcher_background))}
+        btnAdd.setOnClickListener { _ ->
+            viewAdapter.addItem(DataModel("new item", R.drawable.ic_launcher_background))
+            Snackbar
+                .make(mainLayout, "確認新增", Snackbar.LENGTH_SHORT)
+                .setAction("OK") {
+                    Toast.makeText(this, "Snackbar click OK!!", Toast.LENGTH_SHORT).show()
+                }
+                .show()
+        }
     }
 
     override fun onItemClick(position: Int, data: DataModel) {
