@@ -17,16 +17,21 @@ import com.wl.recyclerviewdemo200824.R
  */
 class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
-    private var mContext: Context
     private var mData: ArrayList<DataModel>
+    private var mClickHandler : OnItemClickHandler
 
-    constructor(context: Context, data: ArrayList<DataModel>) : super() {
-        mContext = context
+    interface OnItemClickHandler{
+        fun onItemClick(position : Int, data: DataModel)
+        fun onItemRemove(position : Int, data: DataModel)
+    }
+
+    constructor(data: ArrayList<DataModel>, clickHandler: OnItemClickHandler) : super() {
         mData = data
+        mClickHandler = clickHandler
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        var cell = LayoutInflater.from(mContext).inflate(R.layout.list_item, parent, false)
+        var cell = LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)
         val viewHolder = MyViewHolder(cell)
         viewHolder.icon = cell.findViewById(R.id.icon)
         viewHolder.txtItem = cell.findViewById(R.id.txtItem)
@@ -34,12 +39,12 @@ class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolde
 
         viewHolder.txtItem.setOnClickListener { _ ->
             val position = viewHolder.adapterPosition
-            Toast.makeText(mContext, "您選了 : " + mData[position].txtItem, Toast.LENGTH_SHORT).show()
+            mClickHandler.onItemClick(position, mData[position])
         }
 
         viewHolder.btnRemove.setOnClickListener { _ ->
             val position = viewHolder.adapterPosition
-            removeItem(position)
+            mClickHandler.onItemRemove(position, mData[position])
         }
 
         return viewHolder
@@ -68,7 +73,7 @@ class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolde
         notifyItemInserted(1)
     }
 
-    private fun removeItem(position: Int){
+    fun removeItem(position: Int){
         mData.removeAt(position)
         notifyItemRemoved(position)
     }
