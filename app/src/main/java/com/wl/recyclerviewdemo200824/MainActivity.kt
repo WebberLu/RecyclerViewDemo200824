@@ -1,6 +1,8 @@
 package com.wl.recyclerviewdemo200824
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.wl.recyclerviewdemo200824.adapter.DataModel
 import com.wl.recyclerviewdemo200824.adapter.RecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity(), RecyclerViewAdapter.OnItemClickHandler {
 
@@ -66,11 +69,36 @@ class MainActivity : AppCompatActivity(), RecyclerViewAdapter.OnItemClickHandler
     override fun onItemRemove(position: Int, data: DataModel) {
         mViewAdapter.removeItem(position)
         Snackbar
-            .make(mainLayout, "移除一個項目 : " +data.txtItem, Snackbar.LENGTH_LONG)
+            .make(mainLayout, "移除一個項目 : " + data.txtItem, Snackbar.LENGTH_LONG)
             .setAction("復原") {
                 mViewAdapter.addItem(position, data)
                 recycler_view.scrollToPosition(position)
             }
             .show()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                Toast.makeText(this, "設定", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.action_help -> {
+                Toast.makeText(this, "使用說明", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.action_about -> {
+                Toast.makeText(this, "關於", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
     }
 }
